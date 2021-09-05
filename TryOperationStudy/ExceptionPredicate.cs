@@ -2,5 +2,5 @@
 
 namespace TryOperationStudy
 {
-    public delegate Exception? ExceptionPredicate(Exception ex); 
+    public delegate Exception? ExceptionPredicate(Exception ex);
 }

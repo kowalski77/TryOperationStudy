@@ -11,7 +11,7 @@ namespace TryOperationStudy
                 .Handle<InvalidOperationException>()
                 .Or<ArgumentNullException>()
                 .WithLogger("loggerOne2")
-                .Execute((context) =>
+                .Execute(context =>
                 {
                     Console.WriteLine("test" + context);
                     //throw new ArgumentException("not allowed");

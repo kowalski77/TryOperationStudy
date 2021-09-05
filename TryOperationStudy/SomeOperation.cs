@@ -17,7 +17,7 @@ namespace TryOperationStudy
 
         public static SomeOperation With(string context)
         {
-            return new(context);
+            return new SomeOperation(context);
         }
     }
 }

@@ -10,7 +10,11 @@ namespace TryOperationStudy
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-            static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
+            static Exception? ExceptionPredicate(Exception exception)
+            {
+                return exception is TException ? exception : null;
+            }
+
             builder.ExceptionPredicateCollection.Add(ExceptionPredicate);
 
             return builder;
