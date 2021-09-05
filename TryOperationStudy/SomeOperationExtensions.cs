@@ -8,7 +8,10 @@ namespace TryOperationStudy
         public static SomeOperation Handle<TException>(this SomeOperation builder)
             where TException : Exception
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             static Exception? ExceptionPredicate(Exception exception)
             {
@@ -23,14 +26,20 @@ namespace TryOperationStudy
         public static SomeOperation Or<TException>(this SomeOperation builder)
             where TException : Exception
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             return builder.Handle<TException>();
         }
 
         public static SomeOperation WithLogger(this SomeOperation builder, string logger)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             builder.Logger = logger;
 
@@ -39,8 +48,15 @@ namespace TryOperationStudy
 
         public static void Execute(this SomeOperation builder, Action<string> action)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             try
             {
