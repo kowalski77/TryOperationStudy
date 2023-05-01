@@ -24,7 +24,5 @@ if(result.Failure)
         logger.LogError(errorResult.Message);
     }
 }
-else
-{
-    logger.LogInformation(result.Value.Token);
-}
+
+Console.WriteLine("No errors...");
