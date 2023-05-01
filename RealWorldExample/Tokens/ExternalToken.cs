@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using RealWorldExample.Results;
+using RealWorldExample.Support;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace RealWorldExample.Tokens;
@@ -21,17 +22,11 @@ public record ExternalToken
             Result.Ok() :
             new ErrorResult("Token", "invalid Format");
 
-    private static Result<string> ValidateContent(string token)
-    {
-        try
-        {
-            return TryValidate(token);
-        }
-        catch (SecurityTokenException)
-        {
-            return new ErrorResult("Token", "Invalid Token");
-        }
-    }
+    private static Result<string> ValidateContent(string token) =>
+        TryOperation.For(token)
+            .Handle<SecurityTokenException>()
+            .WithError(new ErrorResult("Token", "invalid content"))
+            .Execute(TryValidate);
 
     private static string TryValidate(string token)
     {
