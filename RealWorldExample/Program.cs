@@ -24,5 +24,3 @@ if(result.Failure)
         logger.LogError(errorResult.Message);
     }
 }
-
-Console.WriteLine("No errors...");
