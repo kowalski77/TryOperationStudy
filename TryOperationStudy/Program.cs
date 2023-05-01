@@ -1,23 +1,15 @@
 ﻿using System;
+using TryOperationStudy;
 
-namespace TryOperationStudy
-{
-    internal static class Program
+SomeOperation operationBuilder = SomeOperation.With("contextOne");
+operationBuilder
+    .Handle<InvalidOperationException>()
+    .Or<ArgumentNullException>()
+    .WithLogger("loggerOne2")
+    .Execute(context =>
     {
-        private static void Main()
-        {
-            var operationBuilder = SomeOperation.With("contextOne");
-            operationBuilder
-                .Handle<InvalidOperationException>()
-                .Or<ArgumentNullException>()
-                .WithLogger("loggerOne2")
-                .Execute(context =>
-                {
-                    Console.WriteLine("test" + context);
-                    //throw new ArgumentException("not allowed");
-                });
+        Console.WriteLine("test" + context);
+        throw new InvalidOperationException("not allowed");
+    });
 
-            Console.ReadKey();
-        }
-    }
-}
+Console.ReadKey();

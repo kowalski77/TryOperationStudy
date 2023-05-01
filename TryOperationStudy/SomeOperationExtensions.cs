@@ -1,78 +1,49 @@
 ﻿using System;
 using System.Linq;
 
-namespace TryOperationStudy
+namespace TryOperationStudy;
+
+public delegate Exception? ExceptionPredicate(Exception ex);
+
+public static class SomeOperationExtensions
 {
-    public static class SomeOperationExtensions
+    public static SomeOperation Handle<TException>(this SomeOperation builder)
+        where TException : Exception
     {
-        public static SomeOperation Handle<TException>(this SomeOperation builder)
-            where TException : Exception
+        static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
+
+        builder.NonNull().ExceptionPredicateCollection.Add(ExceptionPredicate);
+
+        return builder;
+    }
+
+    public static SomeOperation Or<TException>(this SomeOperation builder)
+        where TException : Exception => 
+        builder.NonNull().Handle<TException>();
+
+    public static SomeOperation WithLogger(this SomeOperation builder, string logger)
+    {
+        builder.NonNull().Logger = logger;
+
+        return builder;
+    }
+
+    public static void Execute(this SomeOperation builder, Action<string> action)
+    {
+        try
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            static Exception? ExceptionPredicate(Exception exception)
-            {
-                return exception is TException ? exception : null;
-            }
-
-            builder.ExceptionPredicateCollection.Add(ExceptionPredicate);
-
-            return builder;
+            Console.WriteLine("Logger in action: " + builder.NonNull().Logger);
+            action.NonNull()(builder.Context);
         }
-
-        public static SomeOperation Or<TException>(this SomeOperation builder)
-            where TException : Exception
+        catch (Exception e)
         {
-            if (builder == null)
+            ExceptionPredicate? exception = builder!.ExceptionPredicateCollection.FirstOrDefault(x => x?.Invoke(e) is not null);
+            if (exception is null)
             {
-                throw new ArgumentNullException(nameof(builder));
+                throw;
             }
 
-            return builder.Handle<TException>();
-        }
-
-        public static SomeOperation WithLogger(this SomeOperation builder, string logger)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            builder.Logger = logger;
-
-            return builder;
-        }
-
-        public static void Execute(this SomeOperation builder, Action<string> action)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            try
-            {
-                Console.WriteLine("Logger in action: " + builder.Logger);
-                action(builder.Context);
-            }
-            catch (Exception e)
-            {
-                var exception = builder.ExceptionPredicateCollection.FirstOrDefault(x => x?.Invoke(e) is not null);
-                if (exception is null)
-                {
-                    throw;
-                }
-
-                Console.WriteLine("Exception handled: " + e.GetType().Name);
-            }
+            Console.WriteLine("Exception handled: " + e.GetType().Name);
         }
     }
 }
