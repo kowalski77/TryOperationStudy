@@ -24,7 +24,7 @@ public record ExternalToken
 
     private static Result<string> ValidateContent(string token) =>
         TryOperation.New
-            .Handle<InvalidCastException>()
+            .Handle<SecurityTokenException>()
             .For(token)
             .WithError(new ErrorResult("Token", "invalid token"))
             .Try(ValidateToken);
