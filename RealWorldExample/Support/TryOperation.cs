@@ -36,7 +36,7 @@ public static class TryOperationExtensions
         return builder;
     }
 
-    public static Result<TR> Execute<T, TR>(this TryOperation<T> builder, Func<T, TR> action)
+    public static Result<TR> Try<T, TR>(this TryOperation<T> builder, Func<T, TR> action)
     {
         try
         {

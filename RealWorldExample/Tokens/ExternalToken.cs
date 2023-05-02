@@ -26,9 +26,9 @@ public record ExternalToken
         TryOperation.For(token)
             .Handle<string, SecurityTokenException>()
             .WithError(new ErrorResult("Token", "invalid token"))
-            .Execute(TryValidate);
+            .Try(ValidateToken);
 
-    private static string TryValidate(string token)
+    private static string ValidateToken(string token)
     {
         TokenValidationParameters tokenValidationParameters = new()
         {
