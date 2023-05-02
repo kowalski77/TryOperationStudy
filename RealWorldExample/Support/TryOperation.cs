@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using RealWorldExample.Results;
+﻿using RealWorldExample.Results;
 
 namespace RealWorldExample.Support;
 
@@ -9,24 +8,27 @@ public class TryOperation
 {
     public ErrorResult? ErrorResult { get; set; }
 
-    public string Value { get; set; }
-
-    public TryOperation(string value) => this.Value = value;
-
     public ICollection<ExceptionPredicate?> ExceptionPredicateCollection { get; } = new List<ExceptionPredicate?>();
 
-    public static TryOperation For(string value) => new(value);
+    public static TryOperation<T> For<T>(T value) => new(value);
+}
+
+public sealed class TryOperation<T> : TryOperation
+{
+    public T Value { get; set; }
+
+    public TryOperation(T value) => this.Value = value;
 }
 
 public static class TryOperationExtensions
 {
-    public static TryOperation WithError(this TryOperation builder, ErrorResult errorResult)
+    public static TryOperation<T> WithError<T>(this TryOperation<T> builder, ErrorResult errorResult)
     {
         builder.NotNull().ErrorResult = errorResult;
         return builder;
     }
 
-    public static TryOperation Handle <TException>(this TryOperation builder)
+    public static TryOperation<T> Handle<T, TException>(this TryOperation<T> builder)
         where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
@@ -34,7 +36,7 @@ public static class TryOperationExtensions
         return builder;
     }
 
-    public static Result<TR> Execute<TR>(this TryOperation builder, Func<string, TR> action)
+    public static Result<TR> Execute<T, TR>(this TryOperation<T> builder, Func<T, TR> action)
     {
         try
         {
