@@ -23,8 +23,9 @@ public record ExternalToken
             new ErrorResult("Token", "invalid Format");
 
     private static Result<string> ValidateContent(string token) =>
-        TryOperation.For(token)
-            .Handle<string, SecurityTokenException>()
+        TryOperation.New
+            .Handle<InvalidCastException>()
+            .For(token)
             .WithError(new ErrorResult("Token", "invalid token"))
             .Try(ValidateToken);
 

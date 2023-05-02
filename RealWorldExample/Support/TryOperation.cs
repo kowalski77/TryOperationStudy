@@ -8,9 +8,9 @@ public class TryOperation
 {
     public ErrorResult? ErrorResult { get; set; }
 
-    public ICollection<ExceptionPredicate?> ExceptionPredicateCollection { get; } = new List<ExceptionPredicate?>();
+    public ICollection<ExceptionPredicate?> ExceptionPredicateCollection { get; internal set; } = new List<ExceptionPredicate?>();
 
-    public static TryOperation<T> For<T>(T value) => new(value);
+    public static TryOperation New => new();
 }
 
 public sealed class TryOperation<T> : TryOperation
@@ -22,17 +22,26 @@ public sealed class TryOperation<T> : TryOperation
 
 public static class TryOperationExtensions
 {
-    public static TryOperation<T> WithError<T>(this TryOperation<T> builder, ErrorResult errorResult)
-    {
-        builder.NotNull().ErrorResult = errorResult;
-        return builder;
-    }
-
-    public static TryOperation<T> Handle<T, TException>(this TryOperation<T> builder)
+    public static TryOperation Handle<TException>(this TryOperation builder)
         where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
         builder.NotNull().ExceptionPredicateCollection.Add(ExceptionPredicate);
+        return builder;
+    }
+
+    public static TryOperation<T> For<T>(this TryOperation tryOperation, T value)
+    {
+        TryOperation<T> newlyTryOperation = new(value)
+        {
+            ExceptionPredicateCollection = tryOperation.NotNull().ExceptionPredicateCollection
+        };
+        return newlyTryOperation;
+    }
+
+    public static TryOperation<T> WithError<T>(this TryOperation<T> builder, ErrorResult errorResult)
+    {
+        builder.NotNull().ErrorResult = errorResult;
         return builder;
     }
 
