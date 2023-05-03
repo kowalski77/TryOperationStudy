@@ -4,14 +4,8 @@ namespace RealWorldExample.Support;
 
 public static class TryOperationExtensions
 {
-    public static TryOperation<T> For<T>(this TryOperation tryOperation, T value)
-    {
-        TryOperation<T> newlyTryOperation = new(value)
-        {
-            ExceptionPredicateCollection = tryOperation.NotNull().ExceptionPredicateCollection
-        };
-        return newlyTryOperation;
-    }
+    public static TryOperation<T> For<T>(this TryOperation tryOperation, T value) =>
+        new(value, tryOperation.NotNull().ExceptionPredicateCollection!);
 
     public static TryOperation<T> WithError<T>(this TryOperation<T> builder, ErrorResult errorResult)
     {
