@@ -6,25 +6,29 @@ public delegate Exception? ExceptionPredicate(Exception ex);
 
 public class TryOperation
 {
-    public TryOperation(IEnumerable<ExceptionPredicate?> exceptionPredicateCollection) =>
-        this.ExceptionPredicateCollection = exceptionPredicateCollection.ToList();
+    private TryOperation() { }
+
+    public TryOperation(IEnumerable<ExceptionPredicate> exceptionPredicates) => 
+        this.ExceptionPredicateList.AddRange(exceptionPredicates);
+
+    private List<ExceptionPredicate> ExceptionPredicateList { get; } = Enumerable.Empty<ExceptionPredicate>().ToList();
+
+    public IEnumerable<ExceptionPredicate?> ExceptionPredicateCollection => this.ExceptionPredicateList;
+
+    public void AddExceptionPredicate(ExceptionPredicate exceptionPredicate) =>
+        this.ExceptionPredicateList.Add(exceptionPredicate);
 
     public ErrorResult ErrorResult { get; internal set; } = new("Error", "unknown error");
-
-    public IReadOnlyList<ExceptionPredicate?> ExceptionPredicateCollection { get; }
 
     public static TryOperation Handle<TException>()
         where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
-        TryOperation operation = new(new List<ExceptionPredicate> { ExceptionPredicate });
+        TryOperation operation = new();
+        operation.AddExceptionPredicate(ExceptionPredicate);
 
         return operation;
     }
-
-    // TODO: append another exception
-
-
 }
 
 public sealed class TryOperation<T> : TryOperation
