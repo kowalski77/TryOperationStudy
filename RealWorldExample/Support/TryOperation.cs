@@ -22,7 +22,9 @@ public class TryOperation
         return operation;
     }
 
-    // TODO: And another exception
+    // TODO: append another exception
+
+
 }
 
 public sealed class TryOperation<T> : TryOperation
