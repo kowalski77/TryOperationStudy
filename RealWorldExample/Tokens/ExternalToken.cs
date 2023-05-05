@@ -24,10 +24,10 @@ public record ExternalToken
 
     private static Result<string> ValidateContent(string token) =>
         TryOperation
-            .Handle<SecurityTokenException>()
+            .Handle<SecurityTokenException>(new ErrorResult("Token", "Security error"))
             .Handle<InvalidOperationException>()
             .For(token)
-            .WithError(new ErrorResult("Token", "invalid token"))
+            .WithDefaultError(new ErrorResult("Token", "invalid token"))
             .Try(ValidateToken);
 
     private static string ValidateToken(string token)

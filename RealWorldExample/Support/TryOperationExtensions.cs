@@ -4,11 +4,11 @@ namespace RealWorldExample.Support;
 
 public static class TryOperationExtensions
 {
-    public static TryOperation Handle<TException>(this TryOperation operation)
+    public static TryOperation Handle<TException>(this TryOperation operation, ErrorResult? errorResult = null)
         where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
-        operation.NotNull().AddExceptionPredicate(ExceptionPredicate);
+        operation.NotNull().AddExceptionPredicate((ExceptionPredicate, errorResult));
 
         return operation;
     }
@@ -16,7 +16,7 @@ public static class TryOperationExtensions
     public static TryOperation<T> For<T>(this TryOperation operation, T value) =>
         new(value, operation.NotNull().ExceptionPredicateCollection!);
 
-    public static TryOperation<T> WithError<T>(this TryOperation<T> operation, ErrorResult errorResult)
+    public static TryOperation<T> WithDefaultError<T>(this TryOperation<T> operation, ErrorResult errorResult)
     {
         operation.NotNull().ErrorResult = errorResult;
         return operation;
@@ -30,13 +30,13 @@ public static class TryOperationExtensions
         }
         catch (Exception e)
         {
-            ExceptionPredicate? exception = operation.NotNull().ExceptionPredicateCollection.FirstOrDefault(x => x?.Invoke(e) is not null);
-            if (exception is null)
+            (ExceptionPredicate exceptionPredicate, ErrorResult? error) = operation.NotNull().ExceptionPredicateCollection.FirstOrDefault(x => x.Item1?.Invoke(e) is not null);
+            if (exceptionPredicate is null)
             {
                 throw;
             }
 
-            return operation.ErrorResult;
+            return error ?? operation.ErrorResult;
         }
     }
 }
