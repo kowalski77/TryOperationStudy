@@ -2,11 +2,13 @@
 
 namespace RealWorldExample.Support;
 
-public class ErrorHandlerContext
-{
-    internal ErrorHandlerContext() { }
+public delegate Exception? ExceptionPredicate(Exception ex);
 
-    public ErrorHandlerContext(IEnumerable<(ExceptionPredicate, ErrorResult?)> exceptionPredicates) =>
+public class ExceptionHandlerContext
+{
+    internal ExceptionHandlerContext() { }
+
+    public ExceptionHandlerContext(IEnumerable<(ExceptionPredicate, ErrorResult?)> exceptionPredicates) =>
         this.ExceptionPredicateList.AddRange(exceptionPredicates);
 
     private List<(ExceptionPredicate, ErrorResult?)> ExceptionPredicateList { get; } = 
