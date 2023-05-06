@@ -26,8 +26,8 @@ public record ExternalToken
         ErrorHandlerContextBuilder
             .Handle<SecurityTokenException>()
             .Handle<InvalidOperationException>()
-            .WithNoMoreErrors()
-            .TryExecute(() => ValidateToken(token));
+            .WithNoMoreHandlers()
+            .Execute(() => ValidateToken(token));
 
     private static string ValidateToken(string token)
     {

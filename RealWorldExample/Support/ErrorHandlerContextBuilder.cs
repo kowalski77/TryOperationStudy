@@ -18,7 +18,7 @@ public interface IExpectOtherErrorBuilder
 {
     IExpectOtherErrorBuilder Handle<TException>() where TException : Exception;
 
-    IExecuteErrorHandlerContextBuilder WithNoMoreErrors();
+    IExecuteErrorHandlerContextBuilder WithNoMoreHandlers();
 }
 
 public abstract class ExpectErrors : IExpectOtherErrorBuilder
@@ -29,7 +29,7 @@ public abstract class ExpectErrors : IExpectOtherErrorBuilder
 
     public abstract IExpectOtherErrorBuilder Handle<TException>() where TException : Exception;
 
-    public IExecuteErrorHandlerContextBuilder WithNoMoreErrors() => new ExecuteErrorHandlerContext(this.Context);
+    public IExecuteErrorHandlerContextBuilder WithNoMoreHandlers() => new ExecuteErrorHandlerContext(this.Context);
 }
 
 public class ExpectOtherError : ExpectErrors
@@ -46,7 +46,7 @@ public class ExpectOtherError : ExpectErrors
 
 public interface IExecuteErrorHandlerContextBuilder
 {
-    Result<T> TryExecute<T>(Func<T> action);
+    Result<T> Execute<T>(Func<T> action);
 }
 
 public class ExecuteErrorHandlerContext : IExecuteErrorHandlerContextBuilder
@@ -55,7 +55,7 @@ public class ExecuteErrorHandlerContext : IExecuteErrorHandlerContextBuilder
 
     private ErrorHandlerContext context { get; }
 
-    public Result<T> TryExecute<T>(Func<T> action)
+    public Result<T> Execute<T>(Func<T> action)
     {
         try
         {
