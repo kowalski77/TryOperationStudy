@@ -51,26 +51,19 @@ public interface IExecuteErrorHandlerContextBuilder
     Result<T> Execute<T>(Func<T> action);
 }
 
-public abstract class ExecuteErrorsHandler : IExecuteErrorHandlerContextBuilder
-{
-    public abstract IExecuteErrorHandlerContextBuilder WithDefaultError(ErrorResult errorResult);
-
-    public abstract Result<T> Execute<T>(Func<T> action);
-}
-
-public class ExecuteErrorHandlerContext : ExecuteErrorsHandler
+public class ExecuteErrorHandlerContext : IExecuteErrorHandlerContextBuilder
 {
     public ExecuteErrorHandlerContext(ErrorHandlerContext context) => this.context = context;
 
     private ErrorHandlerContext context { get; }
 
-    public override IExecuteErrorHandlerContextBuilder WithDefaultError(ErrorResult errorResult)
+    public IExecuteErrorHandlerContextBuilder WithDefaultError(ErrorResult errorResult)
     {
         this.context.ErrorResult = errorResult;
         return this;
     }
 
-    public override Result<T> Execute<T>(Func<T> action)
+    public Result<T> Execute<T>(Func<T> action)
     {
         try
         {
