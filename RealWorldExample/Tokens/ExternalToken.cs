@@ -24,7 +24,7 @@ public record ExternalToken
 
     private static Result<string> ValidateContent(string token) =>
         ExceptionHandlerContextBuilder
-            .Handle<SecurityTokenException>()
+            .Handle<SecurityTokenException>().WithError(new ErrorResult("Token", "Security error"))
             .Handle<InvalidOperationException>()
             .WithNoMoreHandlers()
             .WithDefaultError(new ErrorResult("Token", "invalid content"))

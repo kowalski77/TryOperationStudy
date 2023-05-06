@@ -16,6 +16,8 @@ public static class ExceptionHandlerContextBuilder
 
 public interface IExpectOtherExceptionBuilder
 {
+    IExpectOtherExceptionBuilder WithError(ErrorResult errorResult);
+
     IExpectOtherExceptionBuilder Handle<TException>() where TException : Exception;
 
     IExecuteExceptionHandlerContextBuilder WithNoMoreHandlers();
@@ -29,6 +31,8 @@ public abstract class ExpectErrors : IExpectOtherExceptionBuilder
 
     public abstract IExpectOtherExceptionBuilder Handle<TException>() where TException : Exception;
 
+    public abstract IExpectOtherExceptionBuilder WithError(ErrorResult errorResult);
+
     public IExecuteExceptionHandlerContextBuilder WithNoMoreHandlers() => new ExecuteExceptionHandlerContext(this.Context);
 }
 
@@ -40,6 +44,12 @@ public class ExpectOtherError : ExpectErrors
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
         this.Context.AddExceptionPredicate((ExceptionPredicate, default));
+        return this;
+    }
+
+    public override IExpectOtherExceptionBuilder WithError(ErrorResult errorResult)
+    {
+        this.Context.Update(errorResult);
         return this;
     }
 }
