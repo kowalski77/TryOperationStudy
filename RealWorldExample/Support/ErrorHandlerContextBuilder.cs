@@ -46,16 +46,31 @@ public class ExpectOtherError : ExpectErrors
 
 public interface IExecuteErrorHandlerContextBuilder
 {
+    IExecuteErrorHandlerContextBuilder WithDefaultError(ErrorResult errorResult);
+
     Result<T> Execute<T>(Func<T> action);
 }
 
-public class ExecuteErrorHandlerContext : IExecuteErrorHandlerContextBuilder
+public abstract class ExecuteErrorsHandler : IExecuteErrorHandlerContextBuilder
+{
+    public abstract IExecuteErrorHandlerContextBuilder WithDefaultError(ErrorResult errorResult);
+
+    public abstract Result<T> Execute<T>(Func<T> action);
+}
+
+public class ExecuteErrorHandlerContext : ExecuteErrorsHandler
 {
     public ExecuteErrorHandlerContext(ErrorHandlerContext context) => this.context = context;
 
     private ErrorHandlerContext context { get; }
 
-    public Result<T> Execute<T>(Func<T> action)
+    public override IExecuteErrorHandlerContextBuilder WithDefaultError(ErrorResult errorResult)
+    {
+        this.context.ErrorResult = errorResult;
+        return this;
+    }
+
+    public override Result<T> Execute<T>(Func<T> action)
     {
         try
         {

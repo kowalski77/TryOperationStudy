@@ -27,6 +27,7 @@ public record ExternalToken
             .Handle<SecurityTokenException>()
             .Handle<InvalidOperationException>()
             .WithNoMoreHandlers()
+            .WithDefaultError(new ErrorResult("Token", "invalid content"))
             .Execute(() => ValidateToken(token));
 
     private static string ValidateToken(string token)
