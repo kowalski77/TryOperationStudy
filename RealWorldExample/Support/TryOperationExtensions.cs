@@ -5,9 +5,9 @@ namespace RealWorldExample.Support;
 public static class TryOperationExtensions
 {
     public static TryOperation Handle<TException>(this TryOperation operation)
-        where TException : Exception => operation.HandleWithError<TException>(default);
+        where TException : Exception => operation.Handle<TException>(default);
 
-    public static TryOperation HandleWithError<TException>(this TryOperation operation, ErrorResult? errorResult)
+    public static TryOperation Handle<TException>(this TryOperation operation, ErrorResult? errorResult)
     where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;

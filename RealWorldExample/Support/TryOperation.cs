@@ -23,9 +23,9 @@ public class TryOperation
     public ErrorResult ErrorResult { get; internal set; } = new("Error", "unknown error");
 
     public static TryOperation Handle<TException>()
-        where TException : Exception => HandleWithError<TException>(default);
+        where TException : Exception => Handle<TException>(default);
 
-    public static TryOperation HandleWithError<TException>(ErrorResult? errorResult)
+    public static TryOperation Handle<TException>(ErrorResult? errorResult)
     where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
