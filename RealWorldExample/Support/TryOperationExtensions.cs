@@ -5,14 +5,17 @@ namespace RealWorldExample.Support;
 public static class TryOperationExtensions
 {
     public static TryOperation Handle<TException>(this TryOperation operation)
-        where TException : Exception => operation.Handle<TException>(default);
-
-    public static TryOperation Handle<TException>(this TryOperation operation, ErrorResult? errorResult)
     where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
-        operation.NotNull().AddExceptionPredicate((ExceptionPredicate, errorResult));
+        operation.NotNull().AddExceptionPredicate((ExceptionPredicate, default));
 
+        return operation;
+    }
+
+    public static TryOperation With(this TryOperation operation, ErrorResult errorResult)
+    {
+        operation.NotNull().Update(errorResult);
         return operation;
     }
 

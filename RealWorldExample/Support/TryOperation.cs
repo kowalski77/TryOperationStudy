@@ -23,16 +23,19 @@ public class TryOperation
     public ErrorResult ErrorResult { get; internal set; } = new("Error", "unknown error");
 
     public static TryOperation Handle<TException>()
-        where TException : Exception => Handle<TException>(default);
-
-    public static TryOperation Handle<TException>(ErrorResult? errorResult)
     where TException : Exception
     {
         static Exception? ExceptionPredicate(Exception exception) => exception is TException ? exception : null;
         TryOperation operation = new();
-        operation.AddExceptionPredicate((ExceptionPredicate, errorResult));
+        operation.AddExceptionPredicate((ExceptionPredicate, default));
 
         return operation;
+    }
+
+    internal void Update(ErrorResult errorResult)
+    {
+        (ExceptionPredicate predicate, ErrorResult? _) = this.ExceptionPredicateList.Last();
+        this.ExceptionPredicateList[^1] = (predicate, errorResult);
     }
 }
 
