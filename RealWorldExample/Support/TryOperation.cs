@@ -4,12 +4,9 @@ namespace RealWorldExample.Support;
 
 public delegate Exception? ExceptionPredicate(Exception ex);
 
-public class ExceptionHandlerContext
+public class TryOperation
 {
-    internal ExceptionHandlerContext() { }
-
-    public ExceptionHandlerContext(IEnumerable<(ExceptionPredicate, ErrorResult?)> exceptionPredicates) =>
-        this.ExceptionPredicateList.AddRange(exceptionPredicates);
+    internal TryOperation() { }
 
     private List<(ExceptionPredicate, ErrorResult?)> ExceptionPredicateList { get; } = 
         Enumerable.Empty<(ExceptionPredicate, ErrorResult?)>().ToList();

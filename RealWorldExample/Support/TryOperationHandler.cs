@@ -2,13 +2,13 @@
 
 namespace RealWorldExample.Support;
 
-public class ExecuteExceptionHandlerContext : IExecuteExceptionHandlerContextBuilder
+public class TryOperationHandler : ITryOperationHandler
 {
-    public ExecuteExceptionHandlerContext(ExceptionHandlerContext context) => this.context = context;
+    public TryOperationHandler(TryOperation context) => this.context = context;
 
-    private ExceptionHandlerContext context { get; }
+    private TryOperation context { get; }
 
-    public IExecuteExceptionHandlerContextBuilder WithDefaultError(ErrorResult errorResult)
+    public ITryOperationHandler WithDefaultError(ErrorResult errorResult)
     {
         this.context.ErrorResult = errorResult;
         return this;

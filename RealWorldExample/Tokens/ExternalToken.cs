@@ -23,7 +23,7 @@ public record ExternalToken
             new ErrorResult("Token", "invalid Format");
 
     private static Result<string> ValidateContent(string token) =>
-        ExceptionHandlerContextBuilder
+        TryOperationBuilder
             .Handle<SecurityTokenException>().WithError(new ErrorResult("Token", "Security error"))
             .Handle<InvalidOperationException>()
             .WithNoMoreHandlers()
